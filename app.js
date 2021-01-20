@@ -1,29 +1,33 @@
+//requiring the essentials
 var  express    = require("express"),
      mongoose   = require("mongoose"),     
      bodyparser = require("body-parser"),
-     User       = require("./models/user"),
-     Campground = require("./models/campgrounds"),
-     Comment    = require("./models/comment"),
-     seedDB     = require("./seed"),
+     methodOverride = require("method-override"),   
      passport   = require("passport"),
      localStratergy = require("passport-local"),
      expressSession = require("express-session"),
+     seedDB     = require("./seed"),
+     User       = require("./models/user"),
+     Campground = require("./models/campgrounds"),
+     Comment    = require("./models/comments"),
      app        = express();
-
+//requireing the routes
 var campgroundRoute = require("./routes/campgrounds"),
     commentRoute    = require("./routes/comments"),
     indexRoute      = require("./routes/index");
 
 //Connect the database
-mongoose.connect("mongodb://localhost:27017/yelp_camp",{useNewUrlParser:true,useUnifiedTopology: true });
-seedDB();
+mongoose.connect("mongodb://localhost:27017/yelp_camp",{useNewUrlParser:true,useUnifiedTopology: true,useFindAndModify:false });
+
+//seedDB();
 
 app.set("view engine","ejs");
-
+app.use(methodOverride("_method"));
 app.use(bodyparser.urlencoded({extended:true}));
 app.use(express.static(__dirname+"/public"))
 app.use(express.static("public"));
 
+//used in auth
 app.use(expressSession({
     secret : "Colt Steele the boss!!",
     resave:false,
