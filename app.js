@@ -6,6 +6,7 @@ var  express    = require("express"),
      passport   = require("passport"),
      localStratergy = require("passport-local"),
      expressSession = require("express-session"),
+     flash          = require("connect-flash"),   
      seedDB     = require("./seed"),
      User       = require("./models/user"),
      Campground = require("./models/campgrounds"),
@@ -26,7 +27,7 @@ app.use(methodOverride("_method"));
 app.use(bodyparser.urlencoded({extended:true}));
 app.use(express.static(__dirname+"/public"))
 app.use(express.static("public"));
-
+app.use(flash());
 //used in auth
 app.use(expressSession({
     secret : "Colt Steele the boss!!",
@@ -51,6 +52,8 @@ passport.deserializeUser(User.deserializeUser());
 //passing user info to the ejs templates
 function userInfo(req,res,next){
     res.locals.currentUser = req.user;
+    res.locals.error       = req.flash("error");
+    res.locals.success     = req.flash("success");  
     next();
 }
 
