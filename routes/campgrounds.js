@@ -39,9 +39,11 @@ router.post("/",middleware.isLoggedin,function(req,res){
 
 router.get("/:id",function(req,res){
     Campground.findById(req.params.id).populate("comments").exec(function(err,foundCampground){
-        if(err)
-        console.log(err);
-        else {
+        if(err || !foundCampground)
+        {
+            req.flash("error","Campground not found");
+            res.redirect("back");
+        }else {
             res.render("campgrounds/show",{campground:foundCampground});
         }
     })
